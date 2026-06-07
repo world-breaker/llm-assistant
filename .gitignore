@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# 向量数据库（运行 build_kb.py 重新生成）
+chroma_db/
+
+# LoRA 微调权重（运行 sft_train.py 重新生成，68MB太大不适合传GitHub）
+models/
+
+# 训练临时输出
+sft_output/
+sft_out/
+
+# 环境变量
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# 系统文件
+Thumbs.db
+Desktop.ini
