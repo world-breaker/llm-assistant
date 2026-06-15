@@ -1,0 +1,74 @@
+[
+  {
+    "question": "什么是Transformer？",
+    "base_answer": ".\nuser\n什么是Transformer？\nuser\nTransformer是一种深度学习模型架构，主要用于处理序列数据，如自然语言处理任务。它由Google在2017年提出，并迅速成为机器学习领域的一个重要里程碑。与传统的循环神经网络（RNN）和长短期记忆网络（LSTM）不同，Transformer不依赖于序列的顺序信息，而是通过自注意力机制来捕捉输入序列中的相关性。\n\n### 主要特点：\n\n",
+    "lora_answer": "Transformer是一种现代的神经网络架构，它在自然语言处理（NLP）任务中取得了巨大成功。它的核心是自注意力机制（Self-Attention Mechanism），而不是传统的前馈隐藏状态（Feed-Forward Hidden State）层。自注意力机制允许模型在处理每个输入token时，同时关注整个序列，从而捕捉长距离依赖关系。\n\nTransformer的基本组件包括：\n\n1. **",
+    "base_time": 20.4,
+    "lora_time": 215.5,
+    "base_len": 327,
+    "lora_len": 325
+  },
+  {
+    "question": "解释一下Attention机制的核心公式",
+    "base_answer": ".\nuser\n解释一下Attention机制的核心公式\nuser\nAttention机制是一种强大的计算模型，它在自然语言处理、机器翻译、语音识别等领域有着广泛的应用。其核心思想是让模型能够关注到输入序列中的不同部分，从而提高模型对输入信息的理解和处理能力。\n\nAttention机制的核心公式通常包括两个主要部分：加权平均和权重计算。下面我将详细解释这两个部分。\n\n### 1. 加权平均\n\n加权平",
+    "lora_answer": "Attention机制的核心思想是让模型能够聚焦于输入序列中的不同部分，从而更好地理解上下文信息。它通过计算每个位置的注意力分数来决定哪些部分对当前预测最重要。核心公式包括Q（Query）、K（Key）和V（Value）矩阵的计算，以及加权平均后的输出。\n\n1. **Q、K、V矩阵**：\n   - `Q = W_Q * X`：将输入X（通常是嵌入向量）映射到查询向量空间。\n   - `K = W_",
+    "base_time": 10.2,
+    "lora_time": 190.4,
+    "base_len": 313,
+    "lora_len": 248
+  },
+  {
+    "question": "LoRA是什么？为什么能节省显存？",
+    "base_answer": ".\nuser\nLoRA是什么？为什么能节省显存？\nuser\nLoRA（Low-Rank Adaptation）是一种在预训练语言模型上进行微调的技术，它通过将模型参数转换为低秩矩阵来减少模型的复杂度和参数量，从而在保持模型性能的同时显著降低模型的内存占用。这种技术特别适用于需要处理大量数据或运行在资源有限设备上的场景。\n\n具体来说，LoRA通过以下方式节省显存：\n\n1. **参数稀疏化**：LoR",
+    "lora_answer": "LoRA（Low-Rank Adaptation）是一种参数量压缩技术，它通过将大模型的权重矩阵分解为两个较小的矩阵的乘积来减少模型大小。具体来说，LoRA将原始模型的权重矩阵W分解成两个较小的矩阵L和R：W = LAR。其中L和R的维度远小于原始权重矩阵W的维度。在训练时，只训练L和R，而不需要训练整个W。这样可以显著减少模型的参数量。\n\n为什么LoRA能节省显存？\n\n1. **参数量减少**：",
+    "base_time": 10.3,
+    "lora_time": 181.1,
+    "base_len": 297,
+    "lora_len": 239
+  },
+  {
+    "question": "RAG的工作流程是怎样的？",
+    "base_answer": ".\nuser\nRAG的工作流程是怎样的？\nuser\nRAG（Retrieval-Augmented Generation，检索增强生成）是一种结合了检索和生成技术的机器学习方法。它的工作流程可以分为以下几个步骤：\n\n1. **知识库构建**：首先需要有一个包含大量相关文档的知识库。这些文档可以来自多种来源，如网页、书籍、学术论文等。构建知识库的过程可能涉及数据收集、清洗、标注和索引等步骤。\n\n2.",
+    "lora_answer": "RAG（Retrieval-Augmented Generation）的工作流程可以分为以下几个步骤：\n\n1. **文档检索**：首先，从知识库中检索与查询相关的文档。这一步通常使用预训练的检索模型（如BERT-Search）来计算文档和查询之间的相似度分数。\n\n2. **文档排序**：根据检索到的文档和查询的相似度分数对文档进行排序。常用的排序方法有TF-IDF、BM25等。\n\n3. **摘要生",
+    "base_time": 10.3,
+    "lora_time": 186.2,
+    "base_len": 307,
+    "lora_len": 273
+  },
+  {
+    "question": "RLHF和DPO有什么区别？",
+    "base_answer": ".\nuser\nRLHF和DPO有什么区别？\nuser\nRLHF（Reinforcement Learning from Human Feedback，基于人类反馈的强化学习）和DPO（Differentiable Programming Optimization，不同步优化编程）是两个不同的概念，它们在目的、方法和技术上都有显著的区别。\n\n1. **RLHF**：\n   - RLHF是一种机器学习",
+    "lora_answer": "RLHF（Reinforcement Learning from Human Feedback）和DPO（Diverse Permutation Optimization）都是强化学习从人类反馈中训练模型的方法，但它们在实现细节上有所不同。\n\n1. RLHF：\n   - RLHF的核心是让模型通过与人类的交互来学习。用户给出正负反馈（奖励），模型根据这些反馈进行调整。\n   - 优点：直接利用人类",
+    "base_time": 10.9,
+    "lora_time": 180.0,
+    "base_len": 361,
+    "lora_len": 316
+  },
+  {
+    "question": "什么是KV Cache？",
+    "base_answer": ".\nuser\n什么是KV Cache？\nuser\nKV Cache，全称为Key-Value Cache，是一种缓存技术，主要用于存储键值对数据。在KV Cache中，每个数据项都由一个键（Key）和对应的值（Value）组成。这种结构使得数据的查找、插入和删除操作非常高效。\n\nKV Cache的主要特点包括：\n\n1. **快速访问**：由于KV Cache通常存储在内存中，因此读取和写入操作的速",
+    "lora_answer": "KV Cache（Key-Value Cache）是一种缓存技术，它将数据以键值对的形式存储在内存中。这种技术主要用于提高应用程序的性能，因为它可以快速地从内存中读取和写入数据，而不需要访问磁盘或其他慢速存储设备。\n\n在KV Cache中，每个键对应一个值。当应用程序需要访问某个键时，KV Cache会首先检查内存中的缓存，如果找到对应的值，则直接返回；如果没有找到，则从数据库或其他持久化存储中读",
+    "base_time": 10.9,
+    "lora_time": 188.4,
+    "base_len": 310,
+    "lora_len": 278
+  },
+  {
+    "question": "什么是模型的量化？INT4量化是怎么做的？",
+    "base_answer": ".\nuser\n什么是模型的量化？INT4量化是怎么做的？\nuser\n模型的量化是指在保持模型性能尽可能接近原始非量化模型的同时，通过减少模型参数的精度来降低模型的计算复杂度和存储需求。量化通常应用于深度学习模型，特别是那些在边缘设备上运行的模型，因为这些设备往往内存有限且计算能力较弱。\n\nINT4量化是一种具体的量化方法，它将模型中的权重和激活值从32位浮点数（如float32）转换为4位整数（即",
+    "lora_answer": "模型量化是一种将模型权重从32位浮点数（FP32）压缩到较小的整数格式（如8位、4位或更低）的技术。这样做可以显著减少模型大小和计算成本，同时在某些情况下保持相当好的精度。量化后的模型在推理时需要使用量化插件来恢复到原始权重。\n\nINT4量化是将权重从FP32压缩到4位整数（即16比特）的一种方法。具体步骤如下：\n\n1. **量化范围确定**：首先确定量化范围。对于每个权重，找到其最小值和最大值。",
+    "base_time": 11.0,
+    "lora_time": 183.6,
+    "base_len": 294,
+    "lora_len": 226
+  },
+  {
+    "question": "SFT和预训练有什么区别？",
+    "base_answer": ".\nuser\nSFT和预训练有什么区别？\nuser\nSFT（Self-Supervised Fine-Tuning）和预训练（Pre-training）是自然语言处理领域中两种不同的方法，它们在模型训练过程中扮演着不同的角色。下面我将分别解释这两种方法，并指出它们之间的主要区别。\n\n### 预训练\n\n预训练是指在大规模无标注数据上进行的初始训练过程。这个过程通常包括两个步骤：编码器学习和解码器学习",
+    "lora_answer": "SFT（Self-Supervised Fine-Tuning）和预训练是两个不同的概念，它们在模型训练过程中扮演着不同的角色。\n\n1. 预训练：这是指在大规模无标注数据上进行的初始训练过程。预训练的目标是让模型学习到通用的、跨领域的语言表示能力。这个阶段通常使用的是掩码语言模型（Masked Language Model, MLM）或者生成式语言模型（Generative Language Mo",
+    "base_time": 11.9,
+    "lora_time": 176.3,
+    "base_len": 305,
+    "lora_len": 294
+  }
+]
