@@ -59,13 +59,11 @@ def answer_question(message: str, history: list, persona_name: str):
     # ── RAG 检索 + 生成 ──
     t0 = time.time()
     try:
-        # 用记忆上下文增强 prompt
+        # 用记忆上下文增强 query（情感陪伴需要记住之前聊了什么）
         context = memory.get_context() if len(memory) > 0 else ""
-        enhanced_query = message
-        if context:
-            enhanced_query = f"{context}\n\n[最新问题] {message}"
+        final_query = f"{context}\n\n[最新问题] {message}" if context else message
 
-        result = rag.ask(message, stream=False)
+        result = rag.ask(final_query, stream=False)
     except Exception as e:
         import traceback; traceback.print_exc()
         return f"❌ {e}"
