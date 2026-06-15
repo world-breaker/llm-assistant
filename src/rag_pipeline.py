@@ -202,6 +202,50 @@ class RAGPipeline:
             print("[RAG] 警告: 向量库未找到，请先运行 build_kb.py")
             self.collection = None
 
+    def retrieve(self, query: str) -> list:
+        """仅检索，不生成。返回匹配的文档列表。"""
+        if not self.collection:
+            return []
+        retrieved = hybrid_search(
+            query, self.collection, self.embedder, top_k=DEFAULT_TOP_K
+        )
+        return [d for d in retrieved if d["combined_score"] >= SIMILARITY_THRESHOLD]
+
+    def ask_with_messages(
+        self, messages: list, retrieved_docs: list = None, stream: bool = False
+    ) -> dict:
+        """
+        用预构建的消息列表生成回答（支持多轮记忆）。
+        如果有检索文档，拼入最后一条 user 消息前。
+        """
+        if retrieved_docs and len(retrieved_docs) > 0:
+            doc_text = "\n\n".join(
+                f"[参考{d['source']}] {d['content'][:300]}" for d in retrieved_docs[:3]
+            )
+            # 在最后一条 user 消息前插入检索结果
+            enhanced = messages[-1]["content"]
+            messages[-1]["content"] = f"参考资料:\n{doc_text}\n\n用户问题: {enhanced}\n\n请基于参考资料回答。"
+
+        text = self.tokenizer.apply_chat_template(messages, tokenize=False)
+        inputs = self.tokenizer(text, return_tensors="pt").to(self.model.device)
+
+        with torch.no_grad():
+            outputs = self.model.generate(
+                **inputs, max_new_tokens=200, do_sample=False,
+                pad_token_id=self.tokenizer.eos_token_id,
+            )
+
+        response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        answer = response.split("assistant")[-1].strip() if "assistant" in response else response
+
+        return {
+            "retrieved_docs": [
+                {"source": d["source"], "score": f"{d['combined_score']:.3f}", "preview": d["content"][:80]}
+                for d in (retrieved_docs or [])
+            ],
+            "answer": answer,
+        }
+
     def ask(self, query: str, stream: bool = True) -> dict:
         """
         问一个问题，返回 RAG 增强后的回答

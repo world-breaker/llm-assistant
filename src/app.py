@@ -35,72 +35,79 @@ PERSONAS = load_personas()
 # 问答函数
 # ============================================================
 def answer_question(message: str, history: list, persona_name: str):
-    """
-    完整的问答管线：安全检测 → 记忆 → RAG检索 → 人设Prompt → 生成 → 安全再审
-    """
     global rag, memory
 
     if not message or not message.strip():
-        return "请输入问题"
+        yield history
+        return
     if rag is None:
-        return "⏳ 模型加载中..."
+        yield history
+        return
 
-    # ── 安全检测（输入）──
+    # ── 安全检测 ──
     from safety import check_safety
-    input_check = check_safety(message)
-    if not input_check["safe"]:
-        return f"⚠️ 内容安全提醒: {input_check['reason']}"
+    if not check_safety(message)["safe"]:
+        yield history + [
+            {"role": "user", "content": message},
+            {"role": "assistant", "content": "⚠️ 请遵守社区规范"}
+        ]
+        return
 
-    print(f"\n[Q] {message[:60]}")
-
-    # ── 加载当前人设 ──
     persona = PERSONAS.get(persona_name, PERSONAS["技术专家"])
+    print(f"\n[Q] {message[:50]} | 角色: {persona_name}")
 
-    # ── RAG 检索 + 生成 ──
-    t0 = time.time()
+    # ── 构建消息 ──
+    messages = [{"role": "system", "content": persona["system_prompt"]}]
+    for turn in memory.history:
+        messages.append({"role": "user", "content": turn["user"]})
+        messages.append({"role": "assistant", "content": turn["bot"]})
+    messages.append({"role": "user", "content": message})
+
+    # ── RAG 检索 ──
+    retrieved = rag.retrieve(message) if rag.collection else []
+    if retrieved:
+        print(f"  检索: {len(retrieved)} 条文档")
+
+    # ── 生成 ──
     try:
-        # 用记忆上下文增强 query（情感陪伴需要记住之前聊了什么）
-        context = memory.get_context() if len(memory) > 0 else ""
-        final_query = f"{context}\n\n[最新问题] {message}" if context else message
-
-        result = rag.ask(final_query, stream=False)
+        result = rag.ask_with_messages(messages, retrieved)
     except Exception as e:
-        import traceback; traceback.print_exc()
-        return f"❌ {e}"
+        yield history + [
+            {"role": "user", "content": message},
+            {"role": "assistant", "content": f"❌ {e}"}
+        ]
+        return
 
-    # ── 安全检测（输出）──
     answer = result.get("answer", "")
-    output_check = check_safety(answer)
-    if not output_check["safe"]:
-        answer = f"⚠️ 回答已过滤: {output_check['reason']}"
+    if not check_safety(answer)["safe"]:
+        answer = "⚠️ 回答已过滤"
 
-    # ── 更新记忆 ──
     memory.add(message, answer)
 
-    # ── 构造回复 ──
+    # ── 构造完整回复 ──
     lines = []
-
-    # 检索文档
     if result.get("retrieved_docs"):
         lines.append("### 📚 参考文档")
         for doc in result["retrieved_docs"]:
             lines.append(f"- [{doc['score']}] *{doc['source']}*")
         lines.append("")
-
-    # 当前人设标识
-    lines.append(f"*当前角色: {persona_name}*")
+    lines.append(f"*角色: {persona_name}*")
     lines.append("")
-
-    # 回答
-    lines.append("### 💡 回答")
     lines.append(answer)
 
-    # 记忆状态
-    if len(memory) > 0:
-        lines.append(f"\n---\n💬 已记住 {len(memory)} 轮对话")
+    full_reply = "\n".join(lines)
 
-    print(f"  [OK] {time.time()-t0:.1f}s | 角色: {persona_name} | 记忆: {len(memory)}轮")
-    return "\n".join(lines)
+    # ── 流式输出：逐句 yield ──
+    import time as _time
+    new_history = history + [{"role": "user", "content": message}]
+    # 先逐句显示
+    sentences = full_reply.split("\n")
+    accumulated = ""
+    for sentence in sentences:
+        accumulated += sentence + "\n"
+        yield new_history + [{"role": "assistant", "content": accumulated}]
+
+    print(f"  [OK] 记忆: {len(memory)}轮")
 
 
 # ============================================================
@@ -167,11 +174,8 @@ def main():
 
         # 事件绑定
         def respond(message, history, persona):
-            bot_msg = answer_question(message, history, persona)
-            return "", history + [
-                {"role": "user", "content": message},
-                {"role": "assistant", "content": bot_msg}
-            ]
+            for updated_history in answer_question(message, history, persona):
+                yield "", updated_history
 
         def clear_memory():
             global memory
