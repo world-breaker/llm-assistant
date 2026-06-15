@@ -158,7 +158,7 @@ def main():
                 clear_btn = gr.Button("清除记忆", size="sm")
 
             with gr.Column(scale=4):
-                chatbot = gr.Chatbot(height=500, label="对话")
+                chatbot = gr.Chatbot(height=500, label="对话", type="tuples")
                 msg = gr.Textbox(placeholder="输入问题...", label="")
                 with gr.Row():
                     submit_btn = gr.Button("发送", variant="primary")

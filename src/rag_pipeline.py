@@ -30,7 +30,7 @@ MODEL_PATH = os.path.join(
 )
 BGE_MODEL_NAME = "BAAI/bge-small-zh-v1.5"  # 24MB，比Qwen轻250倍，检索准10倍
 COLLECTION_NAME = "llm_knowledge"
-SIMILARITY_THRESHOLD = 0.5  # BGE+余弦：相关0.5-0.7+，无关<0.2
+SIMILARITY_THRESHOLD = 0.4  # BGE+余弦：相关0.5+，无关<0.2。0.4兜底不过滤弱相关
 DEFAULT_TOP_K = 4
 
 
