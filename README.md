@@ -6,7 +6,7 @@
 [![Embedding](https://img.shields.io/badge/Embedding-BGE--small--zh-green)](https://huggingface.co/BAAI/bge-small-zh-v1.5)
 
 > 基于 **Qwen2.5-3B + RAG + LoRA 微调** 的本地智能对话系统  
-> 支持多角色切换、多轮记忆、内容安全过滤 | RTX 5060 (8GB) 全本地运行
+> 支持多角色切换、多轮记忆、内容安全过滤 | RTX 4070 (12GB) 全本地运行
 
 ## 📸 效果演示
 
@@ -64,7 +64,7 @@ llm_interview_assistant/
 
 ### 环境要求
 - Python 3.12 + CUDA 12.8
-- NVIDIA GPU (8GB+ VRAM)
+- NVIDIA GPU (12GB+ VRAM)
 - 已下载 Qwen2.5-3B-Instruct (ModelScope)
 
 ### 1. 安装依赖
@@ -122,4 +122,4 @@ python app.py
 
 ## 🔧 技术栈
 
-**模型**: Qwen2.5-3B-Instruct · **嵌入**: BGE-small-zh · **向量库**: ChromaDB · **微调**: LoRA (PEFT) · **界面**: Gradio · **框架**: LangChain · **硬件**: RTX 5060 Laptop (8GB)
+**模型**: Qwen2.5-3B-Instruct · **嵌入**: BGE-small-zh · **向量库**: ChromaDB · **微调**: LoRA (PEFT) · **界面**: Gradio · **框架**: LangChain · **硬件**: RTX 4070 Laptop (12GB)
