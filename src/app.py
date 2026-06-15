@@ -158,7 +158,7 @@ def main():
                 clear_btn = gr.Button("清除记忆", size="sm")
 
             with gr.Column(scale=4):
-                chatbot = gr.Chatbot(height=500, label="对话", type="tuples")
+                chatbot = gr.Chatbot(height=500, label="对话")
                 msg = gr.Textbox(placeholder="输入问题...", label="")
                 with gr.Row():
                     submit_btn = gr.Button("发送", variant="primary")
@@ -170,8 +170,10 @@ def main():
         # 事件绑定
         def respond(message, history, persona):
             bot_msg = answer_question(message, history, persona)
-            history.append((message, bot_msg))
-            return "", history
+            return "", history + [
+                {"role": "user", "content": message},
+                {"role": "assistant", "content": bot_msg}
+            ]
 
         def clear_memory():
             global memory

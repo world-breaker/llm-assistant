@@ -10,9 +10,13 @@
 
 ## 📸 效果演示
 
-| 技术问答 + RAG检索 | 情感陪伴 + 多轮记忆 |
+| RAG 检索 + 技术问答 | 情感陪伴 + 多轮对话 |
 |---|---|
-| ![rag](docs/rag_demo.png) | ![companion](docs/companion_demo.png) |
+| ![rag](docs/rag_retrieval.png) | ![companion1](docs/companion_chat.png) |
+
+| 人设切换（四角色） | 对话记忆（追问验证） |
+|---|---|
+| ![persona](docs/persona_switch.png) | ![memory](docs/memory_recall.png) |
 
 ## ✨ 功能特性
 
