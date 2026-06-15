@@ -97,15 +97,16 @@ def answer_question(message: str, history: list, persona_name: str):
 
     full_reply = "\n".join(lines)
 
-    # ── 流式输出：逐句 yield ──
-    import time as _time
+    # ── 流式输出：逐句 yield（加上延时才能看到流式效果）──
     new_history = history + [{"role": "user", "content": message}]
-    # 先逐句显示
     sentences = full_reply.split("\n")
     accumulated = ""
-    for sentence in sentences:
+    for i, sentence in enumerate(sentences):
         accumulated += sentence + "\n"
         yield new_history + [{"role": "assistant", "content": accumulated}]
+        if i < len(sentences) - 1:
+            import time as _t
+            _t.sleep(0.15)  # 句间延时，用户能感知到流式
 
     print(f"  [OK] 记忆: {len(memory)}轮")
 

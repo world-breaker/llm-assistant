@@ -226,8 +226,9 @@ class RAGPipeline:
             enhanced = messages[-1]["content"]
             messages[-1]["content"] = f"参考资料:\n{doc_text}\n\n用户问题: {enhanced}\n\n请基于参考资料回答。"
 
-        text = self.tokenizer.apply_chat_template(messages, tokenize=False)
+        text = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
         inputs = self.tokenizer(text, return_tensors="pt").to(self.model.device)
+        input_len = inputs["input_ids"].shape[1]
 
         with torch.no_grad():
             outputs = self.model.generate(
@@ -235,8 +236,9 @@ class RAGPipeline:
                 pad_token_id=self.tokenizer.eos_token_id,
             )
 
-        response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
-        answer = response.split("assistant")[-1].strip() if "assistant" in response else response
+        # 只解码新生成的 token（排除输入部分）
+        new_tokens = outputs[0][input_len:]
+        answer = self.tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
 
         return {
             "retrieved_docs": [
